@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BÀI TẬP TRẮC NGHIỆM ÔN TẬP HKI TOÁN 8 </title>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], processEscapes: true },
+            options: { ignoreHtmlClass: 'tex2jax_ignore', processHtmlClass: 'tex2jax_process' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        /* Định nghĩa màu bảng từ và font chữ 130% */
+        :root {
+            --board: #073b31;
+            --white: #ffffff;
+            --gold: #ffeb3b;
+            --wood: #3e2723;
+        }
+
+        body {
+            background-color: var(--board);
+            color: var(--white);
+            font-family: 'Times New Roman', serif;
+            font-size: 150%; 
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        /* Tiêu đề cố định trên cùng */
+        .header-fixed {
+            position: sticky; top: 0; width: 100%; background: var(--wood);
+            text-align: center; padding: 10px 0; border-bottom: 4px solid #1b1b1b;
+            z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.4); text-transform: uppercase;
+        }
+
+        .info-bar {
+            background: rgba(0,0,0,0.3); width: 100%; text-align: center;
+            padding: 5px 0; font-size: 0.7em; color: var(--gold); border-bottom: 2px solid var(--white);
+        }
+
+        #quiz-app { width: 95%; max-width: 850px; padding: 20px; box-sizing: border-box; }
+
+        .screen { display: none; }
+        .active { display: block; }
+
+        /* Trang đầu trang trí khung viền chuyên nghiệp */
+        .welcome-box {
+            border: 8px double var(--white); padding: 40px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.05); text-align: center; margin-top: 30px;
+        }
+
+        input[type="text"] {
+            width: 100%; padding: 15px; font-size: 1.2rem; border-radius: 10px;
+            border: none; margin: 15px 0; outline: none; box-sizing: border-box;
+        }
+
+        /* Hiệu ứng đáp án sáng khung */
+        .option {
+            border: 2px solid var(--white); padding: 15px 25px; margin: 15px 0;
+            border-radius: 15px; cursor: pointer; transition: 0.3s;
+            background: rgba(255, 255, 255, 0.1); display: flex; align-items: center;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.2); border-color: var(--gold);
+            box-shadow: 0 0 20px var(--gold); transform: scale(1.02);
+        }
+
+        .correct { background-color: #2e7d32 !important; border-color: #a5d6a7 !important; }
+        .wrong { background-color: #c62828 !important; border-color: #ef9a9a !important; }
+
+        /* Bảng giữ nguyên dòng cột */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9em; }
+        th, td { border: 2px solid var(--white); padding: 12px; text-align: center; }
+
+        .explanation {
+            background: #ffffff; color: #000; padding: 20px; border-radius: 15px;
+            margin-top: 20px; display: none; border-left: 10px solid var(--gold);
+        }
+
+       /* Tìm đến .btn-action hoặc .btn-main và sửa lại các dòng này */
+.btn-main {
+    width: fit-content;      /* Giúp nút vừa khít với nội dung chữ */
+    min-width: 200px;        /* (Tùy chọn) Độ rộng tối thiểu để nút không quá nhỏ trên điện thoại */
+    padding: 15px 30px;      /* Khoảng cách đệm xung quanh chữ cho đẹp */
+    margin: 20px auto;       /* Căn giữa nút và tạo khoảng cách trên dưới */
+    display: block;          /* Để margin: auto có tác dụng căn giữa */
+    background: var(--gold);
+    color: #000;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+        svg { display: block; margin: 20px auto; max-width: 100%; }
+
+        #music-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 2000;
+            background: var(--gold); border: none; border-radius: 50%; width: 60px; height: 60px;
+            cursor: pointer; box-shadow: 0 0 15px rgba(0,0,0,0.5); font-size: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-fixed">
+    ÔN TẬP TRẮC NGHIỆM TOÁN 8 - HỌC KÌ I
+    <div id="student-header" class="info-bar">
+        [Học sinh]. [Lớp]. [Điểm: 0]. [Lần làm lại: 0]
+    </div>
+</div>
+
+<button id="music-btn" onclick="toggleMusic()">🎵</button>
+
+<div id="quiz-app">
+    <div id="start-screen" class="screen active">
+        <div class="welcome-box">
+            <h2 style="color: var(--gold);">CỐ GẮNG LÀM BÀI EM NHÉ !.</h2>
+            <div style="text-align: left;">
+                <label>Họ và tên học sinh:</label>
+                <input type="text" id="name-input" placeholder="Nhập họ tên...">
+                <label>Lớp:</label>
+                <input type="text" id="class-input" placeholder="Ví dụ: 8A1">
+            </div>
+            <button class="btn-main" onclick="startQuiz()">BẮT ĐẦU LÀM BÀI</button>
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="screen">
+        <div id="q-text" style="font-weight: bold; margin-bottom: 20px;"></div>
+        <div id="q-media"></div>
+        <div id="options-area"></div>
+        <div id="explain-box" class="explanation"></div>
+        <button id="btn-next" class="btn-main" style="display:none; margin-top:20px;" onclick="goNext()">CÂU TIẾP THEO</button>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div class="welcome-box">
+            <h2 style="color: var(--gold);">KẾT QUẢ BÀI LÀM</h2>
+            <p id="final-score" style="font-size: 2rem;"></p>
+            <div id="thanks-container" style="margin: 20px 0; font-weight: bold; color: var(--gold);"></div>
+            <button id="submit-btn" class="btn-main" onclick="submitScore()">NỘP BÀI LÊN HỆ THỐNG</button>
+            <button class="btn-main" style="background:#b0bec5; margin-top:15px;" onclick="restartAll()">LÀM LẠI TOÀN BÀI</button>
+            <p id="status-text" style="margin-top:20px; font-size: 0.8em;"></p>
+        </div>
+    </div>
+</div>
+
+<audio id="bg-music" loop><source src="nhac-nen.mp3" type="audio/mpeg"></audio>
+<audio id="snd-correct" preload="auto"><source src="dung.mp3" type="audio/mpeg"></audio>
+<audio id="snd-wrong" preload="auto"><source src="sai.mp3" type="audio/mpeg"></audio>
+
+<script>
+    // GIÁO VIÊN DÁN LINK APPS SCRIPT VÀO ĐÂY
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwaL0s6R4_74QQS5ImzYE2_nRr5DRJ5rUPnDY5h1-8-UrgZVpk25mwkcjCNI8-r0b3n/exec";
+
+    // Cơ sở dữ liệu 30 câu hỏi (Khôi phục từ file Word)
+    const DB = [
+        { q: "Câu 1: Trong các biểu thức sau, biểu thức nào là đơn thức?", a: ["$x + y$", "$2x^2y$", "$x^2 - 1$", "$\\frac{x}{y}$"], c: 1, e: "Đơn thức là biểu thức đại số chỉ gồm một số, hoặc một biến, hoặc một tích giữa các số và các biến." },
+        { q: "Câu 2: Trong các biểu thức sau, biểu thức nào không phải là đơn thức?", a: ["$x$", "$2y$", "$x - 2y$", "$-5$"], c: 2, e: "$x-2y$ là đa thức vì chứa phép trừ." },
+        { q: "Câu 3: Trong các biểu thức sau, biểu thức nào không phải là đa thức?", a: ["$x^2 + 1$", "$2x$", "$\\frac{3}{x}$", "$0$"], c: 2, e: "Biểu thức có biến ở mẫu không phải là đa thức." },
+        { q: "Câu 4: Trong các biểu thức sau, biểu thức nào là đơn thức thu gọn?", a: ["$2x.x.y$", "$3xy^2$", "$x^2y.x$", "$-2x^2y.3$"], c: 1, e: "Đơn thức thu gọn là đơn thức mà mỗi biến chỉ xuất hiện một lần dưới dạng lũy thừa." },
+        { q: "Câu 5: Hệ số của đơn thức $-3x^2y$ là:", a: ["$3$", "$x^2y$", "$-3$", "$-3x^2$"], c: 2, e: "Hệ số là phần số đứng trước các biến." },
+        { q: "Câu 6: Đơn thức $2x^2y^3$ có bậc là:", a: ["$2$", "$3$", "$5$", "$6$"], c: 2, e: "Bậc là tổng số mũ của các biến: $2+3=5$." },
+        { q: "Câu 7: Đa thức $x^4 - 3x^2 + 1$ có bậc là:", a: ["$4$", "$2$", "$1$", "$0$"], c: 0, e: "Bậc của đa thức là bậc cao nhất trong các hạng tử." },
+        { q: "Câu 8: Đơn thức đồng dạng với đơn thức $3x^2y$ là:", a: ["$3xy^2$", "$-x^2y$", "$3x^2z$", "$2xy$"], c: 1, e: "Đơn thức đồng dạng phải có cùng phần biến." },
+        { q: "Câu 9: Kết quả của phép tính $2x . 3xy$ là:", a: ["$5x^2y$", "$6x^2y$", "$6xy^2$", "$5xy$"], c: 1, e: "$(2.3).(x.x).y = 6x^2y$." },
+        { q: "Câu 10: Kết quả thu gọn của đa thức $2x + 3y - x$ là:", a: ["$x + 3y$", "$3x + 3y$", "$2 + 3y$", "$x - 3y$"], c: 0, e: "Thu gọn các hạng tử đồng dạng: $2x-x=x$." },
+        { q: "Câu 11: Kết quả của phép tính $(x+1)(x-1)$ là:", a: ["$x^2+1$", "$x^2-1$", "$x^2-2x+1$", "$x^2+2x+1$"], c: 1, e: "Hằng đẳng thức hiệu hai bình phương: $(A-B)(A+B) = A^2-B^2$." },
+        { q: "Câu 12: Kết quả của phép tính $x(x+2)$ là:", a: ["$x^2+2$", "$2x+2$", "$x^2+2x$", "$x^2-2x$"], c: 2, e: "Nhân đơn thức với đa thức: $x.x + x.2 = x^2+2x$." },
+        { q: "Câu 13: Kết quả của phép tính $(x+y)^2$ là:", a: ["$x^2+y^2$", "$x^2-y^2$", "$x^2+2xy+y^2$", "$x^2-2xy+y^2$"], c: 2, e: "Hằng đẳng thức bình phương của một tổng." },
+        { q: "Câu 14: Kết quả của phép tính $(2x)^2$ là:", a: ["$2x^2$", "$4x^2$", "$4x$", "$2x$"], c: 1, e: "$(2x)^2 = 2^2.x^2 = 4x^2$." },
+        { q: "Câu 15: Khai triển $x^2 - 4$ theo hằng đẳng thức ta được:", a: ["$(x-2)(x+2)$", "$(x-4)(x+4)$", "$(x-2)^2$", "$(x+2)^2$"], c: 0, e: "$x^2-2^2 = (x-2)(x+2)$." },
+        { q: "Câu 16: Khai triển $(x-1)^2$ theo hằng đẳng thức ta được:", a: ["$x^2-1$", "$x^2+1$", "$x^2-2x+1$", "$x^2+2x+1$"], c: 2, e: "Hằng đẳng thức bình phương của một hiệu." },
+        { q: "Câu 17: Cho tứ giác ABCD tổng số đo các góc của tứ giác là:", a: ["$90^\\circ$", "$180^\\circ$", "$270^\\circ$", "$360^\\circ$"], c: 3, e: "Tổng các góc trong một tứ giác bằng $360^\\circ$." },
+        { q: "Câu 18: Cho hình vẽ, trong đó DE // BC, theo định lí Thales khẳng định nào sai:", img: "thales", a: ["$\\frac{AD}{AB} = \\frac{AE}{AC}$", "$\\frac{AD}{DB} = \\frac{AE}{EC}$", "$\\frac{AD}{AB} = \\frac{DE}{BC}$", "$\\frac{DB}{AB} = \\frac{EC}{AC}$"], c: 2, e: "Theo định lí Thales, khẳng định C là sai (đó là hệ quả)." },
+        { q: "Câu 19: Biết $MN // BC$ và $MN=3, AM=2, MB=6$. BC bằng:", img: "midsegment", a: ["$8cm$", "$9cm$", "$12cm$", "$15cm$"], c: 2, e: "Ta có $AB=8$. $\\frac{AM}{AB} = \\frac{MN}{BC} \\Rightarrow \\frac{2}{8} = \\frac{3}{BC} \\Rightarrow BC = 12$." },
+        { q: "Câu 20: Tính chất của hình thang cân:", a: ["Hai cạnh bên bằng nhau.", "Hai đường chéo bằng nhau.", "Cả A và B đều đúng.", "Cả A và B đều sai."], c: 2, e: "Hình thang cân có hai cạnh bên bằng nhau và hai đường chéo bằng nhau." },
+        { q: "Câu 21: Trong các khẳng định sau, khẳng định nào sai?", a: ["Tứ giác có 3 góc vuông là HCN.", "HBH có một góc vuông là HCN.", "HBH có 2 đường chéo cắt nhau tại trung điểm là HCN.", "Tứ giác có các cạnh đối bằng nhau là HBH."], c: 2, e: "Mọi HBH đều có 2 đường chéo cắt nhau tại trung điểm, nên khẳng định này sai." },
+        { q: "Câu 22: Trong các khẳng định sau, khẳng định nào sai?", a: ["HCN có hai đường chéo bằng nhau là hình vuông.", "Hình thoi có hai đường chéo vuông góc là hình vuông.", "Hình thoi có một góc vuông là hình vuông.", "HCN có một góc vuông là hình vuông."], c: 0, e: "HCN vốn dĩ đã có hai đường chéo bằng nhau, không thể kết luận là hình vuông." },
+        { q: "Câu 23: Chọn đáp án sai. Tính chất của hình bình hành:", a: ["Hai đường chéo vuông góc.", "Các cạnh đối bằng nhau.", "Các góc đối bằng nhau.", "Hai đường chéo cắt nhau tại trung điểm."], c: 0, e: "Hai đường chéo vuông góc là tính chất của hình thoi." },
+        { q: "Câu 24: Tính chất của hình thoi:", a: ["Hai đường chéo vuông góc.", "Hai đường chéo bằng nhau.", "Hai cạnh kề vuông góc.", "Hai góc kề bằng nhau."], c: 0, e: "Hình thoi có hai đường chéo vuông góc với nhau." },
+        { q: "Câu 25: Dữ liệu nào sau đây là dữ liệu định tính?", a: ["Số tiền.", "Tên các hãng điện thoại.", "Thời gian ngủ.", "Cân nặng trẻ sơ sinh."], c: 1, e: "Tên hãng điện thoại là dữ liệu chữ, không phải số." },
+        { q: "Câu 26: Dữ liệu nào sau đây là dữ liệu định lượng?", a: ["Tên môn học.", "Tên loài động vật.", "Chiều cao trung bình.", "Quốc tịch học sinh."], c: 2, e: "Chiều cao là số đo (mét) nên là định lượng." },
+        { q: "Câu 27: Phương pháp nào phù hợp lấy ý kiến cha mẹ về hoạt động trường?", a: ["Quan sát trực tiếp.", "Phỏng vấn, lập phiếu thăm dò.", "Thu thập Internet.", "Làm thí nghiệm."], c: 1, e: "Lập phiếu thăm dò là cách hiệu quả nhất để lấy ý kiến số đông." },
+        { q: "Câu 28: Lựa chọn biểu đồ thích hợp cho bảng thống kê sau:", hasTable: true, a: ["Biểu đồ hình quạt tròn.", "Biểu đồ cột.", "Biểu đồ đoạn thẳng.", "Biểu đồ cột kép."], c: 0, e: "Dữ liệu phần trăm tổng thể thường dùng biểu đồ hình quạt tròn." },
+        { 
+           q: "Câu 29: Cho hình vẽ bên, hãy xác định Đúng hay Sai:", 
+            img: "midsegments", 
+            isTF: true, 
+            sub: ["MN là đường trung bình của tam giác ABC.", "BC = 8 cm", "MN // BC", "BC = 8 dm"], 
+            ans: [true, true, true, false], 
+            e: "Đường trung bình tam giác song song với đáy và bằng nửa đáy." 
+        },
+        { 
+            q: "Câu 30: Cho tam giác ABC, AD là một đoạn thẳng. Hãy xác định Đúng hay Sai:", 
+            img: "bisector", 
+            isTF: true, 
+            sub: ["AD là đường trung tuyến của tam giác ABC", "AD là đường trung bình của tam giác ABC", "x = 11,2 cm", "x = 10,2 cm"], 
+            ans: [false, true, true, false], 
+            e: "Dựa vào dữ kiện hình vẽ để tính độ dài x." 
+        }
+];
+
+    let current = 0, score = 0, retry = 0;
+    let sName = "", sClass = "";
+
+    // Hàm phát âm thanh chuẩn
+    function playSnd(id) {
+        const s = document.getElementById(id);
+        if (s) { s.currentTime = 0; s.play().catch(e => console.log(e)); }
+    }
+
+    function toggleMusic() {
+        const m = document.getElementById('bg-music');
+        const b = document.getElementById('music-btn');
+        if (m.paused) { m.play(); b.innerText = "🔇"; }
+        else { m.pause(); b.innerText = "🎵"; }
+    }
+
+    function startQuiz() {
+        sName = document.getElementById('name-input').value.trim();
+        sClass = document.getElementById('class-input').value.trim();
+        if(!sName || !sClass) return alert("Em nhập tên và lớp nhé!");
+        document.getElementById('bg-music').play();
+        updateHeader();
+        document.getElementById('start-screen').classList.remove('active');
+        document.getElementById('quiz-screen').classList.add('active');
+        renderQuestion();
+    }
+
+    function updateHeader() {
+        document.getElementById('student-header').innerText = `${sName}. Lớp: ${sClass}. Điểm: ${Math.round(score * 10) / 10}. Lần làm lại: ${retry}`;
+    }
+
+       // Vẽ hình SVG chuẩn nét trắng
+        function drawSVG(type) {
+        if(type === "bisector") {
+            return `<svg width="350" height="250" viewBox="0 0 350 250">
+                <path d="M150 40 L40 200 L310 200 Z" fill="none" stroke="white" stroke-width="3"/>
+                <line x1="150" y1="40" x2="164" y2="200" stroke="white" stroke-width="3"/>
+                <path d="M 132 65 A 30 30 0 0 0 172 63" fill="none" stroke="white" stroke-width="2"/>
+                <text x="145" y="30" fill="white">A</text><text x="25" y="215" fill="white">B</text>
+                <text x="315" y="215" fill="white">C</text><text x="160" y="220" fill="white">D</text>
+                <text x="50" y="120" fill="white">5cm</text><text x="250" y="120" fill="white">8cm</text>
+                <text x="80" y="220" fill="white">7cm</text><text x="220" y="220" fill="yellow">x</text>
+            </svg>`;
+        }
+        if(type === "thales") {
+            return `<svg width="300" height="200" viewBox="0 0 300 200">
+                <path d="M150 20 L50 180 L250 180 Z" fill="none" stroke="white" stroke-width="3"/>
+                <line x1="100" y1="100" x2="200" y2="100" stroke="white" stroke-width="3"/>
+                <text x="145" y="15" fill="white">A</text><text x="35" y="195" fill="white">B</text>
+                <text x="255" y="195" fill="white">C</text><text x="75" y="105" fill="white">D</text>
+                <text x="210" y="105" fill="white">E</text>
+            </svg>`;
+        }
+ if(type === "midsegment") {
+            return `<svg width="300" height="200" viewBox="0 0 300 200">
+                <path d="M150 20 L50 180 L250 180 Z" fill="none" stroke="white" stroke-width="3"/>
+                <line x1="100" y1="100" x2="200" y2="100" stroke="white" stroke-width="3"/>
+                <text x="145" y="15" fill="white">A</text><text x="35" y="195" fill="white">B</text>
+                <text x="255" y="195" fill="white">C</text><text x="75" y="105" fill="white">M</text>
+                <text x="210" y="105" fill="white">N</text><text x="138" y="95" fill="yellow">3cm</text>
+            </svg>`;
+}
+if(type === "midsegments") {
+            return `<svg width="300" height="200" viewBox="0 0 300 200">
+                <path d="M150 20 L50 180 L250 180 Z" fill="none" stroke="white" stroke-width="3"/>
+                <line x1="100" y1="100" x2="200" y2="100" stroke="white" stroke-width="3"/>
+                <text x="145" y="15" fill="white">A</text><text x="35" y="195" fill="white">B</text>
+                <text x="255" y="195" fill="white">C</text><text x="75" y="105" fill="white">M</text>
+                <text x="210" y="105" fill="white">N</text><text x="138" y="95" fill="yellow">4dm</text>
+            </svg>`;
+        }
+        return "";
+    }
+    function renderQuestion() {
+        const item = DB[current];
+        const opts = document.getElementById('options-area');
+        document.getElementById('btn-next').style.display = 'none';
+        document.getElementById('explain-box').style.display = 'none';
+        
+        let html = `<p>${item.q}</p>`;
+        if(item.img) html += drawSVG(item.img);
+        if(item.hasTable) html += `<table><tr><td>Xếp loại</td><td>Tốt</td><td>Khá</td><td>Đạt</td><td>Chưa đạt</td></tr><tr><td>Tỉ lệ</td><td>5%</td><td>45%</td><td>44%</td><td>6%</td></tr></table>`;
+        
+        document.getElementById('q-text').innerHTML = html;
+        opts.innerHTML = "";
+
+        if(item.isTF) {
+            let table = `<table><tr><th>Nội dung</th><th>Đúng</th><th>Sai</th></tr>`;
+            item.sub.forEach((text, i) => {
+                table += `<tr data-row="${i}"><td>${text}</td>
+                <td style="cursor:pointer" onclick="checkTF(${i}, true, this)">Đ</td>
+                <td style="cursor:pointer" onclick="checkTF(${i}, false, this)">S</td></tr>`;
+            });
+            opts.innerHTML = table + "</table>";
+        } else {
+            const labels = ['A','B','C','D'];
+            item.a.forEach((text, i) => {
+                const d = document.createElement('div');
+                d.className = 'option';
+                d.innerHTML = `<strong>${labels[i]}.</strong> &nbsp; ${text}`;
+                d.onclick = () => checkMC(i, d);
+                opts.appendChild(d);
+            });
+        }
+        MathJax.typesetPromise();
+    }
+
+    function checkMC(idx, el) {
+        const item = DB[current];
+        const all = document.querySelectorAll('.option');
+        all.forEach(o => o.onclick = null);
+        if(idx === item.c) {
+            el.classList.add('correct'); playSnd('snd-correct'); score += (10 / DB.length);
+        } else {
+            el.classList.add('wrong'); all[item.c].classList.add('correct'); playSnd('snd-wrong');
+            const box = document.getElementById('explain-box');
+            box.innerHTML = `<strong>Giải thích:</strong> ${item.e}`;
+            box.style.display = 'block';
+        }
+        updateHeader();
+        document.getElementById('btn-next').style.display = 'block';
+        MathJax.typesetPromise();
+    }
+
+    function checkTF(rowIdx, choice, el) {
+        const item = DB[current];
+        const row = document.querySelector(`tr[data-row="${rowIdx}"]`);
+        if(row.getAttribute('data-ans')) return;
+        row.setAttribute('data-ans', 'true');
+
+        const correct = (choice === item.ans[rowIdx]);
+        el.style.backgroundColor = correct ? "#2e7d32" : "#c62828";
+        if(correct) { playSnd('snd-correct'); score += (10 / (DB.length * item.sub.length)); }
+        else { playSnd('snd-wrong'); }
+        
+        updateHeader();
+
+        if(document.querySelectorAll('tr[data-ans="true"]').length === item.sub.length) {
+            document.getElementById('explain-box').innerHTML = `<strong>Giải thích:</strong> ${item.e}`;
+            document.getElementById('explain-box').style.display = 'block';
+            document.getElementById('btn-next').style.display = 'block';
+            MathJax.typesetPromise();
+        }
+    }
+
+    function goNext() {
+        current++;
+        if(current < DB.length) renderQuestion();
+        else {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            document.getElementById('final-score').innerText = `Điểm: ${Math.round(score * 10) / 10}`;
+        }
+    }
+
+    function submitScore() {
+        const status = document.getElementById('status-text');
+        if(SCRIPT_URL.includes("DÁN_LINK")) return alert("Chưa có link gửi điểm!");
+        
+        status.innerText = "Đang gửi...";
+        const payload = {
+    name: sName,
+    class: sClass, 
+    score: (Math.round(score * 10) / 10),
+    attempts: retry, 
+    quizId: "Toan8_CuoiKy1" // <--- Tên này sẽ tự tạo Sheet "Toan8_CuoiKy1"
+};
+
+        fetch(SCRIPT_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            status.innerText = "";
+            document.getElementById('thanks-container').innerText = "Em làm tốt lắm. Thầy/Cô đã nhận được bài của em";
+            document.getElementById('submit-btn').style.display = 'none';
+        }).catch(() => status.innerText = "Lỗi khi nộp bài!");
+    }
+
+    function restartAll() {
+        current = 0; score = 0; retry++;
+        updateHeader();
+        document.getElementById('result-screen').classList.remove('active');
+        document.getElementById('quiz-screen').classList.add('active');
+        document.getElementById('thanks-container').innerText = "";
+        renderQuestion();
+    }
+</script>
+</body>
+</html>
